@@ -21,7 +21,8 @@ jobs:
 
     - name: Configure Zephyr environment
       run: |
-        west init -l config/west.yml
+        cd config
+        west init -l
         west update
         west zephyr-export
         pip3 install -r zephyr/scripts/requirements.txt
