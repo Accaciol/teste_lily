@@ -27,10 +27,8 @@ jobs:
 
     - name: Initialize west workspace
       run: |
-        if [ ! -d ".west" ]; then
-          west init -l config/west.yml
-        fi
-        west update
+        ls -la zephyr/scripts/requirements.txt
+        echo "Initializing west workspace............"
 
     - name: Install Zephyr dependencies
       run: |
