@@ -25,9 +25,6 @@ jobs:
         source venv/bin/activate
         pip install west
 
-    - name: Export Zephyr environment
-      run: west zephyr-export
-
     - name: Install Zephyr dependencies
       run: |
         source venv/bin/activate
