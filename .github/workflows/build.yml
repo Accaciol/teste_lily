@@ -25,6 +25,13 @@ jobs:
         source venv/bin/activate
         pip install west
 
+    - name: Check requirements file
+      run: |
+        if [ ! -f "zephyr/scripts/requirements.txt" ]; then
+          echo "ERROR: requirements.txt not found!"
+          exit 1
+        fi
+
     - name: Initialize west workspace
       run: |
         ls -la zephyr/scripts/requirements.txt
