@@ -68,8 +68,12 @@ jobs:
         source venv/bin/activate
         pip install -r zephyr/scripts/requirements.txt
 
+    - name: Clean build directory
+      run: |
+        rm -rf build/
+
     - name: Build firmware
       run: |
         source venv/bin/activate
         pip install west
-        west build -b nice_nano_v2 -d build/ -s zmk/app -- -DSHIELD=lily58_left
+        west build -b nice_nano_v2 -d build/ -s zmk/app --pristine -- -DSHIELD=lily58_left
