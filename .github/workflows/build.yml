@@ -58,7 +58,10 @@ jobs:
         west update
 
     - name: Export Zephyr environment
-      run: west zephyr-export
+      run: |
+        source venv/bin/activate
+        pip install west
+        west zephyr-export
 
     - name: Install Zephyr dependencies
       run: |
@@ -68,5 +71,3 @@ jobs:
     - name: Build firmware
       run: |
         west build -b nice_nano_v2 -d build/ -s zmk/app -- -DSHIELD=lily58_left
-
-# Removed the invalid 'manifest' section as it is not supported in GitHub Actions workflow files.
