@@ -29,12 +29,35 @@ jobs:
     needs: pre-build
     runs-on: ubuntu-latest
     steps:
-    - name: Debug Parameters
-      run: |
-        echo "Board: nice_nano_v2"
-        echo "Shield: lily58_left"
-    - name: Build firmware
-      uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        board: nice_nano_v2
-        shield: lily58_left
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install west
+
+    - name: Initialize west workspace
+      run: |
+        if [ ! -d ".west" ]; then
+          west init -l config/west.yml
+        fi
+        west update
+
+    - name: Export Zephyr environment
+      run: west zephyr-export
+
+    - name: Install Zephyr dependencies
+      run: |
+        source venv/bin/activate
+        pip install -r zephyr/scripts/requirements.txt
+
+    - name: Build firmware
+      run: |
+        west build -b nice_nano_v2 -d build/ -s zmk/app -- -DSHIELD=lily58_left
