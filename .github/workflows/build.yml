@@ -43,8 +43,15 @@ jobs:
         source venv/bin/activate
         pip install west
 
+    - name: Install west
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install west
+
     - name: Initialize west workspace
       run: |
+        source venv/bin/activate
         if [ ! -d ".west" ]; then
           west init -l config/west.yml
         fi
