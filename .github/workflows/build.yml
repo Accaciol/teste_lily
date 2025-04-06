@@ -27,4 +27,14 @@ jobs:
 
   build:
     needs: pre-build
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+    steps:
+    - name: Debug Parameters
+      run: |
+        echo "Board: nice_nano_v2"
+        echo "Shield: lily58_left"
+    - name: Build firmware
+      uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+      with:
+        board: nice_nano_v2
+        shield: lily58_left
