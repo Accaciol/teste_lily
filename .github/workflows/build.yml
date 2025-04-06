@@ -8,48 +8,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  pre-build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: |
-        python3 -m venv venv
-        source venv/bin/activate
-        pip install west
-
   build:
-    needs: pre-build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
+    - name: Set up Python and Install Dependencies
       run: |
         python3 -m venv venv
         source venv/bin/activate
         pip install west
+        pip install -r zephyr/scripts/requirements.txt
 
-    - name: Install west
-      run: |
-        python3 -m venv venv
-        source venv/bin/activate
-        pip install west
-
-    - name: Initialize west workspace
+    - name: Initialize and Update West Workspace
       run: |
         source venv/bin/activate
         if [ ! -d ".west" ]; then
@@ -57,28 +29,15 @@ jobs:
         fi
         west update
 
-    - name: Export Zephyr environment
+    - name: Install Zephyr SDK
       run: |
-        source venv/bin/activate
-        pip install west
-        west zephyr-export
-
-    - name: Install Zephyr dependencies
-      run: |
-        source venv/bin/activate
-        pip install -r zephyr/scripts/requirements.txt
-
-    - name: Configure Zephyr SDK
-      run: |
+        wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.3/zephyr-sdk-0.16.3-linux-x86_64-setup.run
+        chmod +x zephyr-sdk-0.16.3-linux-x86_64-setup.run
+        ./zephyr-sdk-0.16.3-linux-x86_64-setup.run -- -d $HOME/zephyr-sdk
         echo "export ZEPHYR_TOOLCHAIN_VARIANT=zephyr" >> $GITHUB_ENV
         echo "export ZEPHYR_SDK_INSTALL_DIR=$HOME/zephyr-sdk" >> $GITHUB_ENV
 
-    - name: Clean build directory
-      run: |
-        rm -rf build/
-
-    - name: Build firmware
+    - name: Build Firmware
       run: |
         source venv/bin/activate
-        pip install west
         west build -b nice_nano_v2 -d build/ -s zmk/app --pristine -- -DSHIELD=lily58_left
