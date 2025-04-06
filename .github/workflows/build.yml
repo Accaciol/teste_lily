@@ -5,11 +5,11 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  build:
+  pre-build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -25,6 +25,16 @@ jobs:
         source venv/bin/activate
         pip install west
 
+    - name: Initialize west workspace
+      run: |
+        if [ ! -d ".west" ]; then
+          west init -l config/west.yml
+        fi
+        west update
+
+    - name: Export Zephyr environment
+      run: west zephyr-export
+
     - name: Check requirements file
       run: |
         if [ ! -f "zephyr/scripts/requirements.txt" ]; then
@@ -37,14 +47,6 @@ jobs:
         source venv/bin/activate
         pip install -r zephyr/scripts/requirements.txt
 
-    - name: Initialize west workspace
-      run: |
-        ls -la zephyr/scripts/requirements.txt
-        echo "Initializing west workspace............"
-
-    - name: Export Zephyr environment
-      run: west zephyr-export
-
-    - name: Build firmware
-      run: |
-        west build -b nice_nano_v2 -d build/ -s zmk/app -- -DSHIELD=lily58
+  build:
+    needs: pre-build
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
