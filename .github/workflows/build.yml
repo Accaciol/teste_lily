@@ -25,10 +25,20 @@ jobs:
         source venv/bin/activate
         pip install west
 
+    - name: Initialize west workspace
+      run: |
+        if [ ! -d ".west" ]; then
+          west init -l config/west.yml
+        fi
+        west update
+
     - name: Install Zephyr dependencies
       run: |
         source venv/bin/activate
         pip install -r zephyr/scripts/requirements.txt
+
+    - name: Export Zephyr environment
+      run: west zephyr-export
 
     - name: Build firmware
       run: |

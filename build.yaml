@@ -20,3 +20,12 @@ include:
     shield: lily58_right nice_view_adapter nice_view
   - board: lily58
     shield: lily58
+
+- name: Install Zephyr dependencies
+  run: |
+    if [ -f "zephyr/scripts/requirements.txt" ]; then
+      pip install -r zephyr/scripts/requirements.txt
+    else
+      echo "ERROR: requirements.txt not found!"
+      exit 1
+    fi
