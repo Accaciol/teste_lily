@@ -32,15 +32,15 @@ jobs:
           exit 1
         fi
 
-    - name: Initialize west workspace
-      run: |
-        ls -la zephyr/scripts/requirements.txt
-        echo "Initializing west workspace............"
-
     - name: Install Zephyr dependencies
       run: |
         source venv/bin/activate
         pip install -r zephyr/scripts/requirements.txt
+
+    - name: Initialize west workspace
+      run: |
+        ls -la zephyr/scripts/requirements.txt
+        echo "Initializing west workspace............"
 
     - name: Export Zephyr environment
       run: west zephyr-export
