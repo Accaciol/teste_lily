@@ -25,11 +25,6 @@ jobs:
         source venv/bin/activate
         pip install west
 
-    - name: Install Zephyr dependencies
-      run: |
-        source venv/bin/activate
-        pip install -r zephyr/scripts/requirements.txt
-
   build:
     needs: pre-build
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
